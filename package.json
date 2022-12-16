@@ -1,0 +1,11 @@
+{
+  "name": "car_rental_project",
+  "version": "1.0.0",
+  "description": "Final project software system architecture",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Thomas JEGOU",
+  "license": "ISC"
+}
