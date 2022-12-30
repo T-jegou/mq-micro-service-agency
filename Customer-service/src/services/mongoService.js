@@ -17,6 +17,7 @@ const mongoConnect = () => {
             logger.log('trace', err.stack);
         }
     });
+    mongoose.set('strictQuery', false);
     mongoose.connection.on('connected', function () {  
         logger.log('info',`Mongoose - connection established at ${MONGO_URI}`);
     }); 
