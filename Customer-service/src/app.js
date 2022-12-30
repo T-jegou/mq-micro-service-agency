@@ -4,6 +4,7 @@ const { errorHandlerMiddleware } = require ('./services/errorHandlingService');
 const { logger } = require('./services/loggerService');
 const { amqpConnect } = require('./services/amqpService');
 const { mongoConnect } = require('./services/mongoService');
+const { addRoutes } = require('./routes/api');
 
 
 const PORT = process.env.PORT || 3000;
@@ -26,6 +27,9 @@ startServer = () => {
 
     // Handdle errors
     app.use(errorHandlerMiddleware)
+
+    // Add router handler
+    addRoutes(app)
 
     app.listen(PORT, () => {
         logger.info(`customer service listening on port ${PORT}`);
