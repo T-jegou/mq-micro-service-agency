@@ -1,21 +1,42 @@
+const mongoose = require('mongoose');
+const { hashPassword, validatePassword } = require('../lib/tools');
+const {userSchema} = require('../models/User');
+
+const User = mongoose.model('User', userSchema);
 /**
  * Manage accout.
  * @param {Object} req - Express request object.
  * @param {Object} res - Express response object.
  */
-const createAccount = (req, res) => {
-  console.log("createAccount");
-  res.send("createAccount")
-  return true;
+const createAccount = async (req, res, next) => {
+  let userInfo = req.body;
+  const newUser = new User(userInfo);
+
+  newUser.password = await hashPassword(newUser.password);
+
+  newUser.save((err, user) => {
+    if (err) {
+        // forward to express error handling middleware
+        return next(err);
+    }
+
+    res.status(201).json(user._id);
+  });
 }
 
 const getAccount = (req, res) => {
-  console.log("getAccount");
-  var userID  = req.body.userID;
-  console.log(userID);
-  res.send("getAccount")
-  req.Object
-  return true;
+
+  User.findById(req.body.userID, async (err, user) => {
+    if (err) {
+        res.status(500).json("Cannot find your account");
+    } else {
+      if (await validatePassword(req.body.password, user.password)) {  
+        res.status(200).json(user);
+      } else {
+        res.status(401).json("Unauthorized");
+      }
+    }
+  });
 }
 
 const updateAccount = (req, res) => {
