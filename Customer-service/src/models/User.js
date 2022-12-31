@@ -19,17 +19,21 @@ const userSchema = new Schema({
     type: String,
     required: true
   },
-  adress: {
-    type: String
+  address: {
+    type: String,
+    required: true
   },
   city: {
-    type: String
+    type: String,
+    required: true
   },
   zipCode: {
-    type: String
+    type: String,
+    required: true
   },
   country: {
-    type: String
+    type: String,
+    required: true
   },
   reservationsID: {
     type: Array
