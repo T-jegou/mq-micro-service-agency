@@ -1,0 +1,11 @@
+{
+  "name": "payment-service",
+  "version": "1.0.0",
+  "description": "Fake payment service for rental car agency",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "T-jegou",
+  "license": "ISC"
+}
