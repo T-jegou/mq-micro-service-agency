@@ -20,3 +20,9 @@ exports.validUpdateInfosUser = [
     check('userID').exists(),
     check('password').exists()
 ]
+
+
+exports.validDeleteUser = [
+    check('userID').exists(),
+    check('password').exists()
+]

@@ -83,13 +83,29 @@ const updateAccount = (req, res) => {
 }   
 
 const deleteAccount = (req, res) => {
-  const errors = validationResult(req);
+  // const errors = validationResult(req);
   
-  if (!errors.isEmpty()) {
-    return res.status(400).send({ errors: errors.array() });
-  }
+  // if (!errors.isEmpty()) {
+  //   return res.status(400).send({ errors: errors.array() });
+  // }
 
-  
+  // User.findById(req.body.userID , async (err, user) => {
+  //   if (err) {
+  //       res.status(500).json("Cannot find your account");
+  //   } else {
+  //     if (await validatePassword(req.body.password, user.password))  { 
+  //       await User.deleteOne({ _id: req.body.userID }, (err) => {
+  //         if (err) {
+  //           res.status(500).json("Cannot delete your account");
+  //         } else {
+  //           res.status(200).json("Account deleted");
+  //         }
+  //       }).exec();
+  //     } else {
+  //       res.status(401).json("Unauthorized, WRONG PASSWORD");
+  //     }
+  //   }
+  // });
   return true;
 }
 
