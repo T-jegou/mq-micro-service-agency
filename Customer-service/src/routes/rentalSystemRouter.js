@@ -11,5 +11,5 @@ router.get('/cartContent', getCartContent);
 router.post('/submitCart', submitCart);
 
 module.exports = {
-    rentalSystemRouter: router
+    rentalSystemRouter: router 
 }

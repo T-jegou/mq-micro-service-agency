@@ -34,9 +34,9 @@ const getCartContent = (req, res) => {
 }   
 
 const submitCart = (req, res) => {
-    console.log("deleteAccount");
-    res.send("deleteAccount")
-    return true;
+    let CartDetail = req.body;
+    req.exchangeServices.publishReservationToExchange(CartDetail);
+    res.status(201).json(CartDetail);
 }   
   
   module.exports = {

@@ -2,7 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 const { errorHandlerMiddleware } = require ('./services/errorHandlingService');
 const { logger } = require('./services/loggerService');
-const { amqpConnect } = require('./services/amqpService');
+const { amqpConnect, injectExchangeService } = require('./services/amqpService');
 const { mongoConnect } = require('./services/mongoService');
 const { addRoutes } = require('./routes/api');
 
@@ -24,6 +24,10 @@ startServer = () => {
 
     // Middleware to parse incoming requests with JSON payloads
     app.use(express.json())
+
+    
+    // middleware to inject message-queue services
+    app.use(injectExchangeService);
 
     // Handdle errors
     app.use(errorHandlerMiddleware)

@@ -4,8 +4,10 @@ const { hashPassword, validatePassword } = require('../lib/tools');
 const {userSchema} = require('../models/User');
 
 const User = mongoose.model('User', userSchema);
+
+
 /**
- * Manage accout.
+ * Create account.
  * @param {Object} req - Express request object.
  * @param {Object} res - Express response object.
  */
@@ -15,7 +17,7 @@ const createAccount = async (req, res) => {
   if (!errors.isEmpty()) {
     return res.status(400).send({ errors: errors.array() });
   }
-  
+
   let userInfo = req.body;
   const newUser = new User(userInfo);
 
@@ -24,12 +26,17 @@ const createAccount = async (req, res) => {
   newUser.save((err, user) => {
     if (err) {
       res.status(500).json("Cannot create your account");
+    } else {
+      res.status(201).json(user._id);
     }
-
-    res.status(201).json(user._id);
   });
 }
 
+/**
+ * Get account informations.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 const getAccount = (req, res) => {
   const errors = validationResult(req);
   
@@ -50,6 +57,12 @@ const getAccount = (req, res) => {
   });
 }
 
+
+/**
+ * Create account accout.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 const updateAccount = (req, res) => {
   const errors = validationResult(req);
   
@@ -83,41 +96,17 @@ const updateAccount = (req, res) => {
 }   
 
 const deleteAccount = (req, res) => {
-  // const errors = validationResult(req);
-  
-  // if (!errors.isEmpty()) {
-  //   return res.status(400).send({ errors: errors.array() });
-  // }
-
-  // User.findById(req.body.userID , async (err, user) => {
-  //   if (err) {
-  //       res.status(500).json("Cannot find your account");
-  //   } else {
-  //     if (await validatePassword(req.body.password, user.password))  { 
-  //       await User.deleteOne({ _id: req.body.userID }, (err) => {
-  //         if (err) {
-  //           res.status(500).json("Cannot delete your account");
-  //         } else {
-  //           res.status(200).json("Account deleted");
-  //         }
-  //       }).exec();
-  //     } else {
-  //       res.status(401).json("Unauthorized, WRONG PASSWORD");
-  //     }
-  //   }
-  // });
+  res.send(200).json("Must be implemented");
   return true;
 }
 
 const getReservation = (req, res) => {
-  console.log("Must be implemented");
-  res.send("getReservation") 
+  res.send(200).json("Must be implemented")
   return true;
 }
 
 const getReservations = (req, res) => {
-  console.log("Must be implemented");
-  res.send("getReservations") 
+  res.send(200).json("Must be implemented");
   return true;
 }
 
