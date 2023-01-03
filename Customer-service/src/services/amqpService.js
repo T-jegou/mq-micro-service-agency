@@ -27,8 +27,8 @@ const amqpConnect = async () => {
 }
 
 /**
- * Publish order to queue
- * @param {Object} order - order object containing order details
+ * Publish reservation to queue
+ * @param {Object} reservation - reservation object containing reservation details
  */
 const publishReservationToExchange = (reservation) => {
     reservationChannel.publish(EXCHANGE,'', Buffer.from(JSON.stringify(reservation)));

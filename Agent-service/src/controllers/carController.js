@@ -11,8 +11,6 @@ const processReservation = (reservation, reservationChannel) => {
         reservationChannel.ack(reservation);
         logger.info("AMQP - New reservation received: " + reservationContent + "from the exchange reservations, process in ${delay} seconds");
     });
-
-    // logger.info("AMQP - New reservation received: " + reservationContent + "from the exchange reservations, process in ${delay} seconds");
 }
 
 const sayHello = (req, res) => {
