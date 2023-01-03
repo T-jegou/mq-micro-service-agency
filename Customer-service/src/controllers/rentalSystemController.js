@@ -4,32 +4,27 @@
  * @param {Object} res - Express response object.
  */
 const retrieveAllCars = (req, res) => {
-    console.log("retrieveAllCar");
-    res.send("retrieveAllCar")
+    res.send(200).json("Must be implemented");
     return true;
 }
 
 const retrieveSpecificCars = (req, res) => {
-    console.log("getAccount");
-    res.send("getAccount")
+    res.send(200).json("Must be implemented");
     return true;
 }
 
 const getCarDescritpion = (req, res) => {
-    console.log("updateAccount");
-    res.send("updateAccount")
+    res.send(200).json("Must be implemented");
     return true;
 }   
   
 const AddToCart = (req, res) => {
-    console.log("deleteAccount");
-    res.send("deleteAccount")
+    res.send(200).json("Must be implemented");
     return true;
 }   
 
 const getCartContent = (req, res) => {
-    console.log("deleteAccount");
-    res.send("deleteAccount")
+    res.send(200).json("Must be implemented");
     return true;
 }   
 
