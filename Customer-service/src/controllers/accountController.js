@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const { validationResult } = require('express-validator');
-const { hashPassword, validatePassword } = require('../lib/tools');
+const { hashPassword, isUserExistAndPasswordCorrect } = require('../lib/tools');
 const {userSchema} = require('../models/User');
 
 const User = mongoose.model('User', userSchema);
@@ -27,7 +27,8 @@ const createAccount = async (req, res) => {
     if (err) {
       res.status(500).json("Cannot create your account");
     } else {
-      res.status(201).json(user._id);
+      // res.status(201).json(user._id);
+      res.status(201).json("Account created");
     }
   });
 }
@@ -37,67 +38,81 @@ const createAccount = async (req, res) => {
  * @param {Object} req - Express request object.
  * @param {Object} res - Express response object.
  */
-const getAccount = (req, res) => {
+const getAccount = async (req, res) => {
   const errors = validationResult(req);
   
   if (!errors.isEmpty()) {
     return res.status(400).send({ errors: errors.array() });
   }
-
-  User.findById(req.body.userID, async (err, user) => {
-    if (err) {
-        res.status(500).json("Cannot find your account");
+  try {
+    const user = await isUserExistAndPasswordCorrect(req.body.email, req.body.password);
+    if (typeof user === "object") {
+      res.status(200).json(user);
     } else {
-      if (await validatePassword(req.body.password, user.password)) {  
-        res.status(200).json(user);
-      } else {
-        res.status(401).json("Unauthorized, WRONG PASSWORD");
-      }
+      res.status(401).json("Cannot find your account");
     }
-  });
-}
-
+  } catch (err) {
+    res.status(401).json("Cannot find your account");
+  }
+};
 
 /**
  * Create account accout.
  * @param {Object} req - Express request object.
  * @param {Object} res - Express response object.
  */
-const updateAccount = (req, res) => {
+const updateAccount = async (req, res) => {
   const errors = validationResult(req);
   
   if (!errors.isEmpty()) {
     return res.status(400).send({ errors: errors.array() });
   }
-
-  User.findById(req.body.userID, async (err, user) => {
-    if (err) {
-        res.status(500).json("Cannot find your account");
+  try {
+    const user = await isUserExistAndPasswordCorrect(req.body.email, req.body.password);
+    if (typeof user === "object") {
+      for(const field in req.body) {
+        if (field != "password" && field != "userID" && field != "email") {
+          user[field] = req.body[field];
+        }
+      };
+      user.save((err, user) => {
+        if (err) {
+          res.status(500).json("Cannot update your account");
+        }
+        else {
+          res.status(200).json(user);
+        }
+      });
     } else {
-      if (await validatePassword(req.body.password, user.password))  { 
-        for(const field in req.body) {
-          if (field != "password" && field != "userID") {
-            user[field] = req.body[field];
-          }
-        };
-
-        user.save((err, user) => {
-          if (err) {
-              res.status(500).json("Cannot update your account");
-          } else {
-            res.status(200).json(user);
-          }
-        });
-      } else {
-        res.status(401).json("Unauthorized, WRONG PASSWORD");
-      }
+      res.status(401).json("Cannot find your account");
     }
-  });
-}   
+  } catch (err) {
+    res.status(500).json("An error occured while updating your account");
+  }
+}
 
-const deleteAccount = (req, res) => {
-  res.send(200).json("Must be implemented");
-  return true;
+const deleteAccount = async (req, res) => {
+  const errors = validationResult(req);
+  
+  if (!errors.isEmpty()) {
+    return res.status(400).send({ errors: errors.array() });
+  }
+  try {
+    const user = await isUserExistAndPasswordCorrect(req.body.email, req.body.password);
+    if (typeof user === "object") {
+      User.deleteOne({_id: user._id}, (err) => {
+        if (err) {
+          res.status(500).json("Cannot delete your account");
+        } else {
+          res.status(200).json("Account deleted");
+        }
+      });
+    } else {
+      res.status(401).json("Cannot find your account");
+    }
+  } catch (err) {
+    res.status(401).json("An error occured while deleting your account");
+  }
 }
 
 const getReservation = (req, res) => {
