@@ -7,7 +7,7 @@ const { amqpConnectAndConsume } = require('./services/amqpService');
 const { mongoConnect } = require('./services/mongoService');
 const { addRoutes } = require('./routes/api');
 const { agentSchema } = require('./models/Agent');
-const { hashPassword } = require('./lib/tools');
+const { createFakeCars, createFakeAgents } = require('./lib/tools');
 
 
 const PORT = process.env.PORT || 4000;
@@ -34,27 +34,11 @@ startServer = async () => {
     // Add router handler
     addRoutes(app)
 
-    // Init a fake agent
-    try {
-        const Agent = mongoose.model('Agent', agentSchema);
+    // Init a fake agents
+    await createFakeAgents();
 
-        const newAgent = new Agent ({
-            surname: 'John',
-            name: 'Doe',
-            password: await hashPassword('password'),
-            email: 'john@email.co'
-        });
-    
-        await newAgent.save();
-        logger.info('Fake agent is now created agent email : john@email.com , password : password');
-
-    } catch (error) {
-        if (error.code === 11000) {
-            logger.info('Fake agent is now created agentID email : john@email.com , password : password');
-        } else {
-            logger.info(error);
-        }
-    }
+    // Init a fake cars
+    await createFakeCars();
 
     app.listen(PORT, () => {
         logger.info(`agent service listening on port ${PORT}`);
