@@ -12,7 +12,22 @@ async function validatePassword(password, hashedPassword) {
     return isValid;
 }
 
-module.exports = { 
+async function isUserExistAndPasswordCorrect(email, password) {
+    User.findById(email, async (err, user) => {
+        if (err) {
+            return false
+        } else {
+          if (await validatePassword(password, user.password))  { 
+            return user;
+          } else {
+            return false
+          }
+        }
+      });
+}
+
+module.exports = {
+    isUserExistAndPasswordCorrect: isUserExistAndPasswordCorrect, 
     hashPassword: hashPassword,
     validatePassword: validatePassword
 }
