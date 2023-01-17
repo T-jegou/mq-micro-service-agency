@@ -12,17 +12,25 @@ exports.validUserCreation = [
 ]
 
 exports.validGetInfosUser = [
-    check('userID').exists(),
+    check('email').exists(),
     check('password').exists()
 ]
 
 exports.validUpdateInfosUser = [
-    check('userID').exists(),
+    check('email').exists(),
     check('password').exists()
 ]
 
 
 exports.validDeleteUser = [
-    check('userID').exists(),
+    check('email').exists(),
     check('password').exists()
+]
+
+exports.validReservation = [
+    check('userID').exists(),
+    check('password').exists(),
+    check('carID').exists(),
+    check('startDate').exists(),
+    check('endDate').exists()
 ]
