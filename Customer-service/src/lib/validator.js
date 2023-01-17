@@ -28,7 +28,16 @@ exports.validDeleteUser = [
 ]
 
 exports.validReservation = [
-    check('userID').exists(),
+    check('email').exists(),
+    check('password').exists(),
+    check('carID').exists(),
+    check('startDate').exists(),
+    check('endDate').exists()
+]
+
+
+exports.validAddToCart = [
+    check('email').exists(),
     check('password').exists(),
     check('carID').exists(),
     check('startDate').exists(),

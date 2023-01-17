@@ -1,7 +1,9 @@
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 const {userSchema} = require('../models/User');
+const {carSchema} = require('../models/Car');
 
+const Car = mongoose.model('Car', carSchema);
 const User = mongoose.model('User', userSchema);
 
 async function hashPassword(password) {
@@ -34,8 +36,39 @@ async function isUserExistAndPasswordCorrect(userEmail, password) {
 
 };
 
+async function isCarIdValid(carID) {
+  try {
+    let car = await Car.findById(carID);
+    if (typeof car === "object") {
+      console.log(car);
+      return car;
+    } else {
+      return false
+    }
+  } catch (err) {
+    return false
+  }
+};
+
+async function daysBetween(date1, date2) {
+  // Convertir les dates en millisecondes
+  var date1Time = new Date(date1).getTime();
+  var date2Time = new Date(date2).getTime();
+
+  // Calculer la différence en millisecondes
+  var timeDiff = Math.abs(date2Time - date1Time);
+
+  // Convertir la différence en jours
+  var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+  console.log(typeof(diffDays));
+  return diffDays;
+}
+
 module.exports = {
-    isUserExistAndPasswordCorrect: isUserExistAndPasswordCorrect, 
-    hashPassword: hashPassword,
-    validatePassword: validatePassword
+  daysBetween: daysBetween,
+  isCarIdValid: isCarIdValid,
+  isUserExistAndPasswordCorrect: isUserExistAndPasswordCorrect, 
+  hashPassword: hashPassword,
+  validatePassword: validatePassword
 }
