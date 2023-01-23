@@ -57,7 +57,7 @@ const getAccount = async (req, res) => {
 };
 
 /**
- * Create account accout.
+ * Update account.
  * @param {Object} req - Express request object.
  * @param {Object} res - Express response object.
  */
@@ -91,6 +91,12 @@ const updateAccount = async (req, res) => {
   }
 }
 
+
+/**
+ * de
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 const deleteAccount = async (req, res) => {
   const errors = validationResult(req);
   
@@ -114,6 +120,7 @@ const deleteAccount = async (req, res) => {
     res.status(401).json("An error occured while deleting your account");
   }
 }
+
 
 const getReservation = (req, res) => {
   res.send(200).json("Must be implemented")
