@@ -1,10 +1,13 @@
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 const {agentSchema} = require('../models/Agent');
+const {reservationSchema} = require('../models/Reservation');
 const {carSchema} = require('../models/Car');
 const {logger} = require('../services/loggerService');
 
 const Agent = mongoose.model('Agent', agentSchema);
+const Car = mongoose.model('Car', carSchema);
+const Reservation = mongoose.model('Reservation', reservationSchema);
 
 async function hashPassword(password) {
     const salt = await bcrypt.genSalt(10);
@@ -35,6 +38,71 @@ async function isAgentExistAndPasswordCorrect(agentEmail, password) {
   }
 
 };
+
+
+
+async function isCarIdValid(carID) {
+    try {
+      let car = await Car.findById(carID);
+      if (typeof car === "object") {
+        return car;
+      } else {
+        return false
+      }
+    } catch (err) {
+      return false
+    }
+  };
+  
+  async function daysBetween(date1, date2) {
+    // Convertir les dates en millisecondes
+    var date1Time = new Date(date1).getTime();
+    var date2Time = new Date(date2).getTime();
+  
+    // Calculer la différence en millisecondes
+    var timeDiff = Math.abs(date2Time - date1Time);
+  
+    // Convertir la différence en jours
+    var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+  
+    console.log(typeof(diffDays));
+    return diffDays;
+  }
+
+  async function isCarAvailable(carId, startDate, endDate) {
+    start = new Date(startDate);
+    end = new Date(endDate);
+    try {
+      let car = await Car.findById(carId);
+        if (typeof car === "object") {
+            if (car.available === true) {
+                let reservation = await Reservation.find({carID: carId});
+                console.log(reservation);
+                if (reservation.length === 0) {
+                    return true;
+                } else {
+                    for (let i = 0; i < reservation.length; i++) {
+                        if (start > reservation[i].endDate && end < reservation[i].startDate) {
+                            console.log("Car is available");
+                            return true
+                        }
+                        else {
+                            console.log("Car is not available");                        
+                        }
+                    }
+                }
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    } catch (err) {
+        return false;
+    }
+}
+
+  
 
 
 async function createFakeAgents() {
@@ -169,5 +237,8 @@ module.exports = {
     hashPassword: hashPassword,
     validatePassword: validatePassword,
     createFakeAgents: createFakeAgents,
-    createFakeCars: createFakeCars
+    createFakeCars: createFakeCars,
+    isCarIdValid: isCarIdValid,
+    daysBetween: daysBetween,
+    isCarAvailable: isCarAvailable
 }

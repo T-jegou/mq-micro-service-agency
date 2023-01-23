@@ -26,6 +26,10 @@ const reservationSchema = new Schema({
         type: String,
         required: true
     },
+    paymentMethod : {
+        type: String,
+        required: true
+    },
     ReservationStatus : {
         type: String,
         required: true
