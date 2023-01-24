@@ -80,24 +80,19 @@ async function isCarIdValid(carID) {
         }
 
         if (car.available !== true) {
-            console.log("Car is not available"); 
             return false;
         }
 
         let reservation = await Reservation.find({carID: carId});
         if (reservation.length === 0) {
-            console.log("No reservation for this car");
             return true;
         }
-
-        
         for (let i = 0; i < reservation.length; i++) {
             console.log(reservation[i].startDate, reservation[i].endDate);
             console.log(newResStartDate, newResEndDate);
             if ((newResStartDate > reservation[i].startDate && newResStartDate < reservation[i].endDate)
                 || (newResEndDate > reservation[i].startDate && newResEndDate < reservation[i].endDate)
                 || (newResStartDate < reservation[i].startDate && newResEndDate > reservation[i].endDate)) {
-                console.log("Condition de ouf ");
                 return false;
             } 
         }   
@@ -107,8 +102,13 @@ async function isCarIdValid(carID) {
     }
 }
 
-  
-
+async function deleteAllAgents() {
+    try {
+        await Agent.deleteMany({});
+    } catch (err) {
+        logger.info("Error while deleting all agents : " + err);
+    }
+}
 
 async function createFakeAgents() {
     try {
@@ -144,8 +144,17 @@ async function createFakeAgents() {
     }
 }
 
+async function deleteAllCars() {
+    try {
+        await Car.deleteMany({});
+    } catch (err) {
+        logger.info(err);
+    }
+}
+
 async function createFakeCars() {
     try {
+        
         const Car = mongoose.model('Car', carSchema);
 
         const Car1 = new Car({
@@ -245,5 +254,7 @@ module.exports = {
     createFakeCars: createFakeCars,
     isCarIdValid: isCarIdValid,
     daysBetween: daysBetween,
-    isCarAvailable: isCarAvailable
+    isCarAvailable: isCarAvailable,
+    deleteAllCars: deleteAllCars,
+    deleteAllAgents: deleteAllAgents
 }

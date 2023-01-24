@@ -7,7 +7,7 @@ const { amqpConnectAndConsume } = require('./services/amqpService');
 const { mongoConnect } = require('./services/mongoService');
 const { addRoutes } = require('./routes/api');
 const { agentSchema } = require('./models/Agent');
-const { createFakeCars, createFakeAgents } = require('./lib/tools');
+const { createFakeCars, createFakeAgents, deleteAllCars, deleteAllAgents } = require('./lib/tools');
 
 
 const PORT = process.env.PORT || 4000;
@@ -34,8 +34,14 @@ startServer = async () => {
     // Add router handler
     addRoutes(app)
 
+    // Delete all agents
+    await deleteAllAgents();
+
     // Init a fake agents
     await createFakeAgents();
+
+    // Delete all cars
+    await deleteAllCars();
 
     // Init a fake cars
     await createFakeCars();
