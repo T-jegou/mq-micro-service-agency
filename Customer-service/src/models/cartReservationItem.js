@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const cartReservationItemSchema = new Schema({
+const carItemSchema = new Schema({
     carID : {
         type: String,
         required: true
@@ -27,5 +27,5 @@ const cartReservationItemSchema = new Schema({
 
 
 module.exports = {
-    cartReservationItemSchema: cartReservationItemSchema
+    carItemSchema: carItemSchema
 }

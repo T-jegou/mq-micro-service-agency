@@ -2,9 +2,11 @@ const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 const {userSchema} = require('../models/User');
 const {carSchema} = require('../models/Car');
+const { carItemSchema } = require('../models/cartReservationItem');
 
 const Car = mongoose.model('Car', carSchema);
 const User = mongoose.model('User', userSchema);
+const CartItem = mongoose.model('CartItem', carItemSchema);
 
 async function hashPassword(password) {
     const salt = await bcrypt.genSalt(10);
@@ -35,6 +37,14 @@ async function isUserExistAndPasswordCorrect(userEmail, password) {
   }
 
 };
+
+async function cleanCart() {
+  try {
+    await CartItem.deleteMany({});
+  } catch (err) {
+    console.log(err);
+  }
+}
 
 async function isCarIdValid(carID) {
   try {
@@ -70,5 +80,6 @@ module.exports = {
   isCarIdValid: isCarIdValid,
   isUserExistAndPasswordCorrect: isUserExistAndPasswordCorrect, 
   hashPassword: hashPassword,
-  validatePassword: validatePassword
+  validatePassword: validatePassword,
+  cleanCart: cleanCart
 }

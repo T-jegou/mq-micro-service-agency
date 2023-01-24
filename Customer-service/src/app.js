@@ -5,11 +5,12 @@ const { logger } = require('./services/loggerService');
 const { amqpConnect, injectExchangeService } = require('./services/amqpService');
 const { mongoConnect } = require('./services/mongoService');
 const { addRoutes } = require('./routes/api');
+const { cleanCart } = require('./lib/tools');
 
 
 const PORT = process.env.PORT || 3000;
 
-startServer = () => {
+startServer = async () => {
     // Create a new express application instance
     const app = express()
 
@@ -34,6 +35,9 @@ startServer = () => {
 
     // Add router handler
     addRoutes(app)
+
+    // Clean existant cart
+    await cleanCart();
 
     app.listen(PORT, () => {
         logger.info(`customer service listening on port ${PORT}`);
