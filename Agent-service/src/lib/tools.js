@@ -70,33 +70,38 @@ async function isCarIdValid(carID) {
   }
 
   async function isCarAvailable(carId, startDate, endDate) {
-    start = new Date(startDate);
-    end = new Date(endDate);
+    newResStartDate = new Date(startDate);
+    newResEndDate = new Date(endDate);
+
     try {
       let car = await Car.findById(carId);
-        if (typeof car === "object") {
-            if (car.available === true) {
-                let reservation = await Reservation.find({carID: carId});
-                console.log(reservation);
-                if (reservation.length === 0) {
-                    return true;
-                } else {
-                    for (let i = 0; i < reservation.length; i++) {
-                        if (start > reservation[i].endDate && end < reservation[i].startDate) {
-                            console.log("Car is available");
-                            return true
-                        }
-                        else {
-                            console.log("Car is not available");                        
-                        }
-                    }
-                }
-            } else {
-                return false;
-            }
-        } else {
+        if (typeof car !== "object") {
             return false;
         }
+
+        if (car.available !== true) {
+            console.log("Car is not available"); 
+            return false;
+        }
+
+        let reservation = await Reservation.find({carID: carId});
+        if (reservation.length === 0) {
+            console.log("No reservation for this car");
+            return true;
+        }
+
+        
+        for (let i = 0; i < reservation.length; i++) {
+            console.log(reservation[i].startDate, reservation[i].endDate);
+            console.log(newResStartDate, newResEndDate);
+            if ((newResStartDate > reservation[i].startDate && newResStartDate < reservation[i].endDate)
+                || (newResEndDate > reservation[i].startDate && newResEndDate < reservation[i].endDate)
+                || (newResStartDate < reservation[i].startDate && newResEndDate > reservation[i].endDate)) {
+                console.log("Condition de ouf ");
+                return false;
+            } 
+        }   
+        return true;
     } catch (err) {
         return false;
     }
