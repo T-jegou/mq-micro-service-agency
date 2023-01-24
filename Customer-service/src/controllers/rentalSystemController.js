@@ -25,7 +25,6 @@ const AddToCart = async (req, res) => {
             const car = await isCarIdValid(req.body.carID);
             if (typeof car === "object") {
                 const durationReservation = await daysBetween(req.body.endDate, req.body.startDate);
-                console.log(user)
                 let reservationItemDetail = {
                     userID: user._id,
                     carID: req.body.carID,
@@ -64,7 +63,7 @@ const submitCart = (req, res) => {
     res.status(201).json(CartDetail);
 }
 
-// ----------------------------
+ 
 /**
  * List all existant and available cars.
  * @param {Object} req - Express request object.
@@ -85,6 +84,12 @@ const retrieveAllCars = async (req, res) => {
     }
 }
 
+
+/**
+ * Retrieve car by option.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 const retrieveSpecificCars = async (req, res) => {
     const errors = validationResult(req);
   
@@ -92,24 +97,90 @@ const retrieveSpecificCars = async (req, res) => {
       return res.status(400).send({ errors: errors.array() });
     }
 
+    let optionList = []
+    if (req.body.brand) {
+        optionList.push({brand: req.body.brand});
+    }
+    if (req.body.model) {
+        optionList.push({model: req.body.model});
+    }
+    if (req.body.seats) {
+        optionList.push({seats: req.body.seats});
+    }
+
+    if (optionList.length == 0 || optionList == [] ) {
+        res.status(400).json("No options provided or wrong options provided");
+        return false;
+    }
+
     try {
-        let cars = await Car.find({available: true});
+        let cars = await Car.find({$and: optionList});
+        if(cars.length == 0) {
+            res.status(404).json("No car found with this option");
+            return false;
+        }
         res.status(200).json(cars);
     } catch (err) {
         res.status(500).json("Error while retrieving this specificy on cars" + err);
     }
 }
 
-const getCarDescritpion = (req, res) => {
-    res.send(200).json("Must be implemented");
-    return true;
+/**
+ * Retrieve description of a specific Car.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
+const getCarDescritpion = async (req, res) => {
+    const errors = validationResult(req);
+  
+    if (!errors.isEmpty()) {
+      return res.status(400).send({ errors: errors.array() });
+    }
+
+    try {
+        const car = await isCarIdValid(req.params.carID);
+        if (typeof car === "object") {
+            let carDescription = {
+                brand: car.brand,
+                model: car.model,
+                seats: car.numberOfSeat,
+                pricePerDay: car.pricePerDay,
+            }
+            res.status(200).json(carDescription);
+        } else {
+            res.status(400).json("Car ID is not valid");
+        }
+    } catch (err) {
+        res.status(500).json("Error while retrieving car description" + err);
+    }
 }   
   
 
 
-const getCartContent = (req, res) => {
-    res.send(200).json("Must be implemented");
-    return true;
+const getCartContent = async (req, res) => {
+    // const errors = validationResult(req);
+  
+    // if (!errors.isEmpty()) {
+    //   return res.status(400).send({ errors: errors.array() });
+    // }
+
+    // const user = await isUserExistAndPasswordCorrect(req.body.email, req.body.password);
+
+    // if (typeof user !== "object") {
+    //     res.status(401).json("Cannot find your account");
+    //     return false;
+    // }
+
+    // // Get all reservation for this user
+    // let cart = []
+    // CartItem.find({userID: user._id}, (err, cart) => {
+    //     if (err) {
+    //         res.status(500).json("Cannot retrieve cart : " + err);
+    //     }
+    //     else {
+    //         res.status(200).json(cart);
+    //     }
+    // });
 }   
 
 

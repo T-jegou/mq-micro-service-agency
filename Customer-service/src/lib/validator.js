@@ -43,3 +43,13 @@ exports.validAddToCart = [
     check('startDate').exists(),
     check('endDate').exists()
 ]
+
+exports.validGetSpecificCar = [
+    check('brand'),
+    check('model'),
+    check('seat')
+]
+   
+exports.validGetCarDescritpion = [
+    check('carID').exists()
+]

@@ -15,7 +15,6 @@ async function hashPassword(password) {
     return hash;
 };
 
-
 async function validatePassword(password, hashedPassword) {
     const isValid = await bcrypt.compare(password, hashedPassword);
     return isValid;
@@ -36,10 +35,7 @@ async function isAgentExistAndPasswordCorrect(agentEmail, password) {
   } catch (err) {
     return false
   }
-
 };
-
-
 
 async function isCarIdValid(carID) {
     try {

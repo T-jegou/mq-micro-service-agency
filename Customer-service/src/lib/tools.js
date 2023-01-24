@@ -50,7 +50,6 @@ async function isCarIdValid(carID) {
   try {
     let car = await Car.findById(carID);
     if (typeof car === "object") {
-      console.log(car);
       return car;
     } else {
       return false
