@@ -7,6 +7,7 @@ const { carItemSchema } = require('../models/cartReservationItem');
 const Car = mongoose.model('Car', carSchema);
 const User = mongoose.model('User', userSchema);
 const CartItem = mongoose.model('CartItem', carItemSchema);
+const Reservation = mongoose.model('Reservation', carItemSchema);
 
 async function hashPassword(password) {
     const salt = await bcrypt.genSalt(10);
@@ -74,11 +75,46 @@ async function daysBetween(date1, date2) {
   return diffDays;
 }
 
+async function isCarAvailable(carId, startDate, endDate) {
+  newResStartDate = new Date(startDate);
+  newResEndDate = new Date(endDate);
+
+  try {
+    let car = await Car.findById(carId);
+      if (typeof car !== "object") {
+          return false;
+      }
+
+      if (car.available !== true) {
+          return false;
+      }
+
+      let reservation = await Reservation.find({carID: carId});
+      if (reservation.length === 0) {
+          return true;
+      }
+      for (let i = 0; i < reservation.length; i++) {
+          console.log(reservation[i].startDate, reservation[i].endDate);
+          console.log(newResStartDate, newResEndDate);
+          if ((newResStartDate > reservation[i].startDate && newResStartDate < reservation[i].endDate)
+              || (newResEndDate > reservation[i].startDate && newResEndDate < reservation[i].endDate)
+              || (newResStartDate < reservation[i].startDate && newResEndDate > reservation[i].endDate)) {
+              return false;
+          } 
+      }   
+      return true;
+  } catch (err) {
+      console.log(err);
+      return false;
+  }
+}
+
 module.exports = {
   daysBetween: daysBetween,
   isCarIdValid: isCarIdValid,
   isUserExistAndPasswordCorrect: isUserExistAndPasswordCorrect, 
   hashPassword: hashPassword,
   validatePassword: validatePassword,
-  cleanCart: cleanCart
+  cleanCart: cleanCart,
+  isCarAvailable: isCarAvailable
 }

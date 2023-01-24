@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const { cartReservationItemSchema } = require('../models/CartReservationItem');
 const { carSchema } = require('../models/Car');
 const { validationResult } = require('express-validator');
-const { isUserExistAndPasswordCorrect, isCarIdValid, daysBetween} = require('../lib/tools');
+const { isUserExistAndPasswordCorrect, isCarIdValid, daysBetween, isCarAvailable} = require('../lib/tools');
 
 const CartItem = mongoose.model('CartItem', cartReservationItemSchema);
 const Car = mongoose.model('Car', carSchema);
@@ -21,32 +21,51 @@ const AddToCart = async (req, res) => {
 
     try {
         const user = await isUserExistAndPasswordCorrect(req.body.email, req.body.password);
-        if (typeof user === "object") {
-            const car = await isCarIdValid(req.body.carID);
-            if (typeof car === "object") {
-                const durationReservation = await daysBetween(req.body.endDate, req.body.startDate);
-                let reservationItemDetail = {
-                    userID: user._id,
-                    carID: req.body.carID,
-                    startDate: req.body.startDate,
-                    endDate: req.body.endDate,
-                    price: car.pricePerDay * durationReservation
-                }
-                const newReservationItem = new CartItem(reservationItemDetail);
-                newReservationItem.save((err, reservation) => {
-                    if (err) {
-                        res.status(500).json("Cannot add to cart : " + err);
-                    }
-                    else {
-                        res.status(201).json(reservation);
-                    }
-                });
-            } else {
-                res.status(400).json("Car ID is not valid");
-            }     
-        } else {
-          res.status(401).json("Cannot find your account");
+        if (typeof user !== "object") {
+            res.status(400).json("User does not exist or password is incorrect");
+            return false;
         }
+        
+        const car = await isCarIdValid(req.body.carID);
+        if (typeof car !== "object") {
+            res.status(400).json("Car ID is not valid");
+            return false;
+        }
+
+
+        const availability = await isCarAvailable(req.body.carID, req.body.startDate, req.body.endDate);
+        if (availability === false) {
+            res.status(400).json("Car is not available on this period ");
+            return false;
+        };
+
+        const inCart = await CartItem.findOne({carID: req.body.carID, userID: user._id});
+        if (typeof inCart === "object") {
+            res.status(400).json("Car is already in cart");
+            return false;
+        };
+       
+        const durationReservation = await daysBetween(req.body.endDate, req.body.startDate);
+        if (durationReservation < 1) {
+            res.status(400).json("End date must be after start date");
+        }
+
+        let reservationItemDetail = {
+            userID: user._id,
+            carID: req.body.carID,
+            startDate: req.body.startDate,
+            endDate: req.body.endDate,
+            price: car.pricePerDay * durationReservation
+        }
+        const newReservationItem = new CartItem(reservationItemDetail);
+        newReservationItem.save((err, reservation) => {
+            if (err) {
+                res.status(500).json("Cannot add to cart : " + err);
+            }
+            else {
+                res.status(201).json(reservation);
+            }
+        });
     } catch (err) {
     res.status(500).json("Error while adding to cart" + err);
     }
@@ -158,18 +177,18 @@ const getCarDescritpion = async (req, res) => {
 
 
 const getCartContent = async (req, res) => {
-    // const errors = validationResult(req);
+    const errors = validationResult(req);
   
-    // if (!errors.isEmpty()) {
-    //   return res.status(400).send({ errors: errors.array() });
-    // }
+    if (!errors.isEmpty()) {
+      return res.status(400).send({ errors: errors.array() });
+    }
 
-    // const user = await isUserExistAndPasswordCorrect(req.body.email, req.body.password);
+    const user = await isUserExistAndPasswordCorrect(req.body.email, req.body.password);
 
-    // if (typeof user !== "object") {
-    //     res.status(401).json("Cannot find your account");
-    //     return false;
-    // }
+    if (typeof user !== "object") {
+        res.status(401).json("Cannot find your account");
+        return false;
+    }
 
     // // Get all reservation for this user
     // let cart = []
