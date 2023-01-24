@@ -1,9 +1,11 @@
 const mongoose = require('mongoose');
-const { cartReservationItemSchema } = require('../models/cartReservationItem');
+const { cartReservationItemSchema } = require('../models/CartReservationItem');
+const { carSchema } = require('../models/Car');
 const { validationResult } = require('express-validator');
 const { isUserExistAndPasswordCorrect, isCarIdValid, daysBetween} = require('../lib/tools');
 
 const CartItem = mongoose.model('CartItem', cartReservationItemSchema);
+const Car = mongoose.model('Car', carSchema);
 
 /**
  * Add new reservation to the cart.
@@ -58,22 +60,44 @@ const AddToCart = async (req, res) => {
  */
 const submitCart = (req, res) => {
     let Reservations = req.body;
-
-    
     req.exchangeServices.publishReservationToExchange(CartDetail);
     res.status(201).json(CartDetail);
 }
 
 // ----------------------------
+/**
+ * List all existant and available cars.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
+const retrieveAllCars = async (req, res) => {
+    const errors = validationResult(req);
+  
+    if (!errors.isEmpty()) {
+      return res.status(400).send({ errors: errors.array() });
+    }
 
-const retrieveAllCars = (req, res) => {
-    res.send(200).json("Must be implemented");
-    return true;
+    try {
+        let cars = await Car.find({available: true});
+        res.status(200).json(cars);
+    } catch (err) {
+        res.status(500).json("Error while retrieving cars" + err);
+    }
 }
 
-const retrieveSpecificCars = (req, res) => {
-    res.send(200).json("Must be implemented");
-    return true;
+const retrieveSpecificCars = async (req, res) => {
+    const errors = validationResult(req);
+  
+    if (!errors.isEmpty()) {
+      return res.status(400).send({ errors: errors.array() });
+    }
+
+    try {
+        let cars = await Car.find({available: true});
+        res.status(200).json(cars);
+    } catch (err) {
+        res.status(500).json("Error while retrieving this specificy on cars" + err);
+    }
 }
 
 const getCarDescritpion = (req, res) => {
