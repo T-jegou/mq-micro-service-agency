@@ -6,7 +6,6 @@ const { logger } = require('./services/loggerService');
 const { amqpConnectAndConsume } = require('./services/amqpService');
 const { mongoConnect } = require('./services/mongoService');
 const { addRoutes } = require('./routes/api');
-const { agentSchema } = require('./models/Agent');
 const { createFakeCars, createFakeAgents, deleteAllCars, deleteAllAgents } = require('./lib/tools');
 
 
