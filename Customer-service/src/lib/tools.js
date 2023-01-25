@@ -2,12 +2,12 @@ const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 const {userSchema} = require('../models/User');
 const {carSchema} = require('../models/Car');
-const { carItemSchema } = require('../models/cartReservationItem');
+const {cartItemSchema} = require('../models/CartItem');
 
 const Car = mongoose.model('Car', carSchema);
 const User = mongoose.model('User', userSchema);
-const CartItem = mongoose.model('CartItem', carItemSchema);
-const Reservation = mongoose.model('Reservation', carItemSchema);
+const CartItem = mongoose.model('CartItem', cartItemSchema);
+const Reservation = mongoose.model('Reservation', cartItemSchema);
 
 async function hashPassword(password) {
     const salt = await bcrypt.genSalt(10);
@@ -71,25 +71,22 @@ async function daysBetween(date1, date2) {
   // Convertir la différence en jours
   var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
 
-  console.log(typeof(diffDays));
   return diffDays;
 }
 
-async function isCarAvailable(carId, startDate, endDate) {
+async function isCarAvailable(carID, startDate, endDate) {
   newResStartDate = new Date(startDate);
   newResEndDate = new Date(endDate);
 
   try {
-    let car = await Car.findById(carId);
-      if (typeof car !== "object") {
+    newCar = await Car.findById(carID);
+      if (typeof newCar !== "object") {
           return false;
       }
-
-      if (car.available !== true) {
+      if (newCar.available !== true) {
           return false;
       }
-
-      let reservation = await Reservation.find({carID: carId});
+      let reservation = await Reservation.find({carID: newCar.carID});
       if (reservation.length === 0) {
           return true;
       }
