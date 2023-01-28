@@ -93,7 +93,8 @@ const updateAccount = async (req, res) => {
 
 
 /**
- * de
+ * delete account.
+ * To do : delete reservation if user has one
  * @param {Object} req - Express request object.
  * @param {Object} res - Express response object.
  */
