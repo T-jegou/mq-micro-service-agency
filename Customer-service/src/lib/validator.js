@@ -53,3 +53,14 @@ exports.validGetSpecificCar = [
 exports.validGetCarDescritpion = [
     check('carID').exists()
 ]
+
+exports.validDelCartItem = [
+    check('email').exists(),
+    check('password').exists(),
+    check('reservation_id').exists()
+]
+
+exports.validGetCartContent = [
+    check('email').exists(),
+    check('password').exists()
+]

@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
-const { cartReservationItemSchema } = require('../models/CartReservationItem');
-const { carSchema } = require('../models/Car');
-const { validationResult } = require('express-validator');
+const { validationResult, body } = require('express-validator');
 const { isUserExistAndPasswordCorrect, isCarIdValid, daysBetween, isCarAvailable} = require('../lib/tools');
 
-const CartItem = mongoose.model('CartItem', cartReservationItemSchema);
+const { cartItemSchema } = require("../models/CartItem");
+const { carSchema } = require('../models/Car');
+const CartItem = mongoose.model('CartItem', cartItemSchema);
 const Car = mongoose.model('Car', carSchema);
 
 /**
@@ -39,8 +39,9 @@ const AddToCart = async (req, res) => {
             return false;
         };
 
+        // Is this reservation already in the cart
         const inCart = await CartItem.findOne({carID: req.body.carID, userID: user._id});
-        if (typeof inCart === "object") {
+        if (inCart !== null) {
             res.status(400).json("Car is already in cart");
             return false;
         };
@@ -175,7 +176,11 @@ const getCarDescritpion = async (req, res) => {
 }   
   
 
-
+/**
+ * Retrieve content of your Cart.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 const getCartContent = async (req, res) => {
     const errors = validationResult(req);
   
@@ -190,29 +195,57 @@ const getCartContent = async (req, res) => {
         return false;
     }
 
-    // // Get all reservation for this user
-    // let cart = []
-    // CartItem.find({userID: user._id}, (err, cart) => {
-    //     if (err) {
-    //         res.status(500).json("Cannot retrieve cart : " + err);
-    //     }
-    //     else {
-    //         res.status(200).json(cart);
-    //     }
-    // });
-}   
+    CartDetail = await CartItem.find({userID: user._id});
+
+    if (CartDetail.length == 0) {
+        res.status(404).json("No car in cart");
+        return false;
+    }
+
+    res.status(200).json(CartDetail);
+}
 
 
+/**
+ * Delete a reservation in your cart.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
+const deleteReservationInCart = async (req, res) => {
+    const errors = validationResult(req);
 
+    if(!errors.isEmpty()) {
+        return res.status(400).send({ errors: errors.array() });
+    }
 
-  
+    const user = await isUserExistAndPasswordCorrect(req.body.email, req.body.password);
+    if (typeof user !== "object") {
+        res.status(401).json("Cannot find your account");
+        return false;
+    }
+    
+    try {
+        const cartItemDetail = await CartItem.deleteOne({_id: req.body.reservation_id, userID: user._id});
+        if (cartItemDetail.deletedCount == 0) {
+            res.status(404).json("Reservation not found");
+            return false;
+        } else {
+            res.status(200).json("Reservation deleted");
+        }
+    } catch (err) {
+        res.status(500).json("Error while deleting reservation" + err);
+        return false;
+    }
+}
+
   module.exports = {
     retrieveAllCars: retrieveAllCars,
     retrieveSpecificCars: retrieveSpecificCars,
     getCarDescritpion: getCarDescritpion,
     AddToCart: AddToCart,
     getCartContent: getCartContent,
-    submitCart: submitCart
+    submitCart: submitCart,
+    deleteReservationInCart: deleteReservationInCart,
 }
   
   

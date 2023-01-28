@@ -4,7 +4,7 @@ const {validAddToCart, validDelCartItem, validGetCartContent} = require('../lib/
 const router = express.Router();
 
 router.post('/',validAddToCart, AddToCart);
-router.delete('/:cartItemID', validDelCartItem, deleteReservationInCart);
+router.delete('/', validDelCartItem, deleteReservationInCart);
 router.get('/', validGetCartContent, getCartContent);
 router.put('/', submitCart);
 
