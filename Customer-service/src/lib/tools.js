@@ -86,16 +86,15 @@ async function isCarAvailable(carID, startDate, endDate) {
       if (newCar.available !== true) {
           return false;
       }
-      let reservation = await Reservation.find({carID: newCar.carID});
+
+      let reservation = await Reservation.find({carID: carID});
       if (reservation.length === 0) {
           return true;
       }
       for (let i = 0; i < reservation.length; i++) {
-          console.log(reservation[i].startDate, reservation[i].endDate);
-          console.log(newResStartDate, newResEndDate);
-          if ((newResStartDate > reservation[i].startDate && newResStartDate < reservation[i].endDate)
-              || (newResEndDate > reservation[i].startDate && newResEndDate < reservation[i].endDate)
-              || (newResStartDate < reservation[i].startDate && newResEndDate > reservation[i].endDate)) {
+          if ((newResStartDate >= reservation[i].startDate && newResStartDate <= reservation[i].endDate)
+              || (newResEndDate >= reservation[i].startDate && newResEndDate <= reservation[i].endDate)
+              || (newResStartDate <= reservation[i].startDate && newResEndDate >= reservation[i].endDate)) {
               return false;
           } 
       }   
