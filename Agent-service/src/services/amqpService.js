@@ -28,9 +28,9 @@ const amqpConnectAndConsume = async () => {
         reservationChannel.prefetch(PREFETCH_COUNT);
         logger.info(`AMQP - connection established at ${MQ_URL} with prefetch count ${PREFETCH_COUNT}`)
 
-        reservationChannel.consume(QUEUE, reservation => {
-            processReservation(reservation, reservationChannel);
-        });
+        reservationChannel.consume(QUEUE, (reservation) => {
+            processReservation(reservation);
+        }, { noAck: true });
     }
     catch (ex) {
         logger.log('fatal',`AMQP - ${ex}`);
