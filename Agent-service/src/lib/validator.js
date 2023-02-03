@@ -34,3 +34,8 @@ exports.validIsAvailable = [
     check('startDate').exists(),
     check('endDate').exists(),
 ]
+
+exports.validIsAgent = [
+    check('email').exists(),
+    check('password').exists(),
+]
