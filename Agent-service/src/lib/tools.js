@@ -3,11 +3,26 @@ const mongoose = require('mongoose');
 const {agentSchema} = require('../models/Agent');
 const {reservationSchema} = require('../models/Reservation');
 const {carSchema} = require('../models/Car');
+const {userSchema} = require('../models/User');
 const {logger} = require('../services/loggerService');
 
 const Agent = mongoose.model('Agent', agentSchema);
 const Car = mongoose.model('Car', carSchema);
 const Reservation = mongoose.model('Reservation', reservationSchema);
+const Customer = mongoose.model('User', userSchema);
+
+async function isCustomerExist(customerID) {
+  try {
+    let customer = await Customer.findById(customerID);
+    if (typeof customer === "object") {
+      return customer;
+    } else {
+      return false
+    }
+  } catch (err) {
+    return false
+  }
+};
 
 async function hashPassword(password) {
     const salt = await bcrypt.genSalt(10);
@@ -84,11 +99,9 @@ async function isCarIdValid(carID) {
             return true;
         }
         for (let i = 0; i < reservation.length; i++) {
-            console.log(reservation[i].startDate, reservation[i].endDate);
-            console.log(newResStartDate, newResEndDate);
-            if ((newResStartDate > reservation[i].startDate && newResStartDate < reservation[i].endDate)
-                || (newResEndDate > reservation[i].startDate && newResEndDate < reservation[i].endDate)
-                || (newResStartDate < reservation[i].startDate && newResEndDate > reservation[i].endDate)) {
+            if ((newResStartDate >= reservation[i].startDate && newResStartDate <= reservation[i].endDate)
+                || (newResEndDate >= reservation[i].startDate && newResEndDate <= reservation[i].endDate)
+                || (newResStartDate <= reservation[i].startDate && newResEndDate >= reservation[i].endDate)) {
                 return false;
             } 
         }   
@@ -244,6 +257,7 @@ async function createFakeCars() {
 
 module.exports = {
     isAgentExistAndPasswordCorrect: isAgentExistAndPasswordCorrect, 
+    isCustomerExist: isCustomerExist,
     hashPassword: hashPassword,
     validatePassword: validatePassword,
     createFakeAgents: createFakeAgents,
