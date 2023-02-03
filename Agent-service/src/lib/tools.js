@@ -119,6 +119,14 @@ async function deleteAllAgents() {
     }
 }
 
+async function deleteAllReservation() {
+    try {
+        await Reservation.deleteMany({});
+    } catch (err) {
+        logger.info("Error while deleting all reservation : " + err);
+    }
+}
+
 async function createFakeAgents() {
     try {
 
@@ -266,5 +274,6 @@ module.exports = {
     daysBetween: daysBetween,
     isCarAvailable: isCarAvailable,
     deleteAllCars: deleteAllCars,
-    deleteAllAgents: deleteAllAgents
+    deleteAllAgents: deleteAllAgents,
+    deleteAllReservation: deleteAllReservation
 }

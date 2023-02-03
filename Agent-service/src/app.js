@@ -6,7 +6,7 @@ const { logger } = require('./services/loggerService');
 const { amqpConnectAndConsume } = require('./services/amqpService');
 const { mongoConnect } = require('./services/mongoService');
 const { addRoutes } = require('./routes/api');
-const { createFakeCars, createFakeAgents, deleteAllCars, deleteAllAgents } = require('./lib/tools');
+const { createFakeCars, createFakeAgents, deleteAllCars, deleteAllAgents, deleteAllReservation } = require('./lib/tools');
 
 
 const PORT = process.env.PORT || 4000;
@@ -44,6 +44,9 @@ startServer = async () => {
 
     // Init a fake cars
     await createFakeCars();
+
+    // Delete old reservations
+    await deleteAllReservation();
 
     app.listen(PORT, () => {
         logger.info(`agent service listening on port ${PORT}`);
