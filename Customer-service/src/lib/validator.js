@@ -64,3 +64,8 @@ exports.validGetCartContent = [
     check('email').exists(),
     check('password').exists()
 ]
+
+exports.validSubmitCar = [
+    check('email').exists(),
+    check('password').exists()
+]
