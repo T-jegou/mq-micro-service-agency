@@ -11,6 +11,17 @@ const Car = mongoose.model('Car', carSchema);
 const Reservation = mongoose.model('Reservation', reservationSchema);
 const Customer = mongoose.model('User', userSchema);
 
+
+// Async functions to save a list of reservations in the database
+async function saveReservations(reservations) {
+    try {
+        await Reservation.insertMany(reservations);
+    } catch (err) {
+        logger.info("Error while saving reservations : " + err);
+    }
+}
+
+
 async function isCustomerExist(customerID) {
   try {
     let customer = await Customer.findById(customerID);
@@ -76,7 +87,6 @@ async function isCarIdValid(carID) {
     // Convertir la différence en jours
     var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
   
-    console.log(typeof(diffDays));
     return diffDays;
   }
 
@@ -275,5 +285,7 @@ module.exports = {
     isCarAvailable: isCarAvailable,
     deleteAllCars: deleteAllCars,
     deleteAllAgents: deleteAllAgents,
-    deleteAllReservation: deleteAllReservation
+    deleteAllReservation: deleteAllReservation,
+    saveReservations: saveReservations
+    
 }
