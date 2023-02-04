@@ -1,11 +1,118 @@
 const mongoose = require('mongoose');
-const { validationResult, body } = require('express-validator');
+const { validationResult } = require('express-validator');
 const { isUserExistAndPasswordCorrect, isCarIdValid, daysBetween, isCarAvailable} = require('../lib/tools');
 
 const { cartItemSchema } = require("../models/CartItem");
 const { carSchema } = require('../models/Car');
 const CartItem = mongoose.model('CartItem', cartItemSchema);
 const Car = mongoose.model('Car', carSchema);
+
+/**
+ * Valide the cart and send it to the exchange after payment.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
+const submitCart = async (req, res) => {
+    const errors = validationResult(req);
+  
+    if (!errors.isEmpty()) {
+      return res.status(400).send({ errors: errors.array() });
+    }
+
+    try {
+        const user = await isUserExistAndPasswordCorrect(req.body.email, req.body.password);
+        if (typeof user !== "object") {
+            res.status(400).json("User does not exist or password is incorrect");
+            return false;
+        }
+        const reservationList = await CartItem.find({userID: user._id});
+        if (reservationList.length === 0) {
+            res.status(400).json("Cart is empty");
+            return false;
+        }
+
+        const paymentMethodRes = req.body.paymentMethod;
+        if (paymentMethodRes !== "cash" && paymentMethodRes !== "creditCard") {
+            res.status(400).json("Payment method is not valid");
+            return false;
+        }
+
+        // If paymentMethod is creditCard, check if creditCardNumber field is present
+        if (paymentMethodRes === "creditCard") {
+            if (typeof req.body.creditCardNumber === "undefined") {
+                res.status(400).json("Credit card number is not valid, it must be 16 digits. Cart not submitted");
+                return false;
+            }
+        }
+
+        // If paymentMethod is creditCard, check if creditCardNumber is valid
+        if (paymentMethodRes === "creditCard") {
+            const creditCardNumber = req.body.creditCardNumber;
+            if (creditCardNumber.length !== 16) {
+                res.status(400).json("Credit card number is not valid, it must be 16 digits. Cart not submitted");
+                return false;
+            }
+        }
+
+        // Cast reservationList to JSON
+        const reservationListJSON = JSON.parse(JSON.stringify(reservationList));
+
+
+        // Add field paymentMethod to each items in reservationList
+        for (let i = 0; i < reservationListJSON.length; i++) {
+            reservationListJSON[i].paymentMethod = paymentMethodRes;
+        }
+
+        // Place reservationList to exchange
+        req.exchangeServices.publishReservationToExchange(reservationListJSON);
+
+        // Delete cart
+        await CartItem.deleteMany({userID: user._id});
+
+
+        res.status(201).json("Cart submitted");
+        return true;
+    } catch (err) {
+        res.status(500).json("Error while submitting cart" + err);
+    }
+}
+
+
+/**
+ * Submit cartItem to process.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ *  
+ * @returns {Object} - CartItem object.
+ * @returns {Object} - Error object.
+ */
+
+const testMQ = async (req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(400).send({ errors: errors.array() });
+    }
+
+    jsonPayload = [
+        {
+            "carID": "5f1f1b9b9b9b9b9b9b9b9b9b",
+            "startDate": "2020-07-20",
+            "endDate": "2020-07-25",
+            "userID": "5f1f1b9b9b9b9b9b9b9b9b9b"
+        },
+        {
+            "carID": "5f1f1b9b9b9b9b9b9b9b9b9b",
+            "startDate": "2020-07-20",
+            "endDate": "2020-07-25",
+            "userID": "5f1f1b9b9b9b9b9b9b9b9b9b"
+        }
+    ]
+    req.exchangeServices.publishReservationToExchange(jsonPayload);
+    res.status(201).json("Cart submitted");
+    return true;
+}
+
 
 /**
  * Add new reservation to the cart.
@@ -72,16 +179,7 @@ const AddToCart = async (req, res) => {
     }
 }
 
-/**
- * Valide the cart and send it to the exchange after payment.
- * @param {Object} req - Express request object.
- * @param {Object} res - Express response object.
- */
-const submitCart = (req, res) => {
-    let Reservations = req.body;
-    req.exchangeServices.publishReservationToExchange(CartDetail);
-    res.status(201).json(CartDetail);
-}
+
 
  
 /**
@@ -246,6 +344,7 @@ const deleteReservationInCart = async (req, res) => {
     getCartContent: getCartContent,
     submitCart: submitCart,
     deleteReservationInCart: deleteReservationInCart,
+    testMQ: testMQ,
 }
   
   
