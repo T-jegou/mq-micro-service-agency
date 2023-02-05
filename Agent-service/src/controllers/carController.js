@@ -68,7 +68,6 @@ const listReservation = async (req, res) => {
 /**
  * Add new car to the catalog
  * @param {Object} reservation - RabbitMQ reservation object.
- * @param {Object} reservationChannel - RabbitMQ reservation channel.
  * */
 const processReservation = async (reservation) => {
     reservationContent = JSON.parse(reservation.content.toString());
@@ -84,8 +83,6 @@ const processReservation = async (reservation) => {
         logger.info("Cannot find this customer in the database");
         return false;
     }
-
-
 
     // Check if each car is available and if the carID is valid we create a new reservation
     for (let i = 0; i < reservationContent.length; i++) {
@@ -162,6 +159,13 @@ const processReservation = async (reservation) => {
         text: 'Your reservation is confirmed',
         html: '<p>Dear ' + customer.firstName + ' ' + customer.lastName + ',</p><p>Your reservation is confirmed</p><p>Here is the details of your reservation</p><p>' + JSON.stringify(emailInfo) + '</p><p>Thank you for using EfreiCar</p>'
     };
+
+    logger.info("New mail created and ready to be sent to the customer");
+    console.log(email);
+
+    // Send the email to the customer
+    // TODO : Ici on peut ajouter un appel vers un service de mail pour envoyer le mail
+    // Ou bien gérer avec un service directement dans un autre microservice (ex : nodemailer)
 
 }
 

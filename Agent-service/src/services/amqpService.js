@@ -39,5 +39,5 @@ const amqpConnectAndConsume = async () => {
 }
 
 module.exports = {
-    amqpConnectAndConsume: amqpConnectAndConsume
+    amqpConnectAndConsume: amqpConnectAndConsume, 
 }

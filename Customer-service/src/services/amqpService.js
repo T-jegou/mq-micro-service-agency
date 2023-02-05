@@ -44,7 +44,7 @@ const publishReservationToExchange = (reservation) => {
 const injectExchangeService = (req, res, next) => {
     // Here i can add all exchange operations as methods of exchangeServices object
     const exchangeServices = {
-        publishReservationToExchange: publishReservationToExchange
+        publishReservationToExchange: publishReservationToExchange, 
     }
     // inject exchangeServices in request object
     req.exchangeServices = exchangeServices;
