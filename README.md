@@ -1,12 +1,10 @@
 # Car Rental Agency
 
-Final project of software architecture course.
-
 Our project consist of 2 microservices, one document DB (mongoDB) and also one MQ (RabbitMQ).
 
 ## Customer-service
 
-### The role of customer-service is to provide users with the possibility of :
+### The role of customer-service is to provide users with the possibility of
 
 - Customer registers for a new account
 - Customer retrieves account information
@@ -23,7 +21,7 @@ Our project consist of 2 microservices, one document DB (mongoDB) and also one M
 - Clear his cart
 - Submit his cart content
 
-### The role of Agent-service is to provide users with the possibility of :
+### The role of Agent-service is to provide users with the possibility of
 
 - Agent checks whether a customer (identified by his email) is registered
 - Agent can retrieve reservation of a customer (identified by his email)
@@ -34,21 +32,20 @@ Our project consist of 2 microservices, one document DB (mongoDB) and also one M
 - Agent checks availability for a specific car
 - Agent can check all exisiting reservations
 
-
-See below the description of the applications.
+## See below the description of the applications
 
 Architecture Diagram :
 ![plot](./docs/Car%20Rental%20Agency(2).png)
 
 ## Project setup
 
-```
+```bash
 docker-compose up -d
 ```
 
 ## (Optionnal) Scale the agent service (up to 50)
 
-```
+```bash
 docker-compose up --scale agent-service=<1-50>
 ```
 
