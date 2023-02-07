@@ -65,6 +65,14 @@ async function cleanCart() {
   }
 }
 
+async function cleanCustomer() {
+  try {
+    await User.deleteMany({});
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 async function isCarIdValid(carID) {
   try {
     let car = await Car.findById(carID);
@@ -131,5 +139,6 @@ module.exports = {
   validatePassword: validatePassword,
   cleanCart: cleanCart,
   isCarAvailable: isCarAvailable, 
-  retrieveReservations: retrieveReservations
+  retrieveReservations: retrieveReservations,
+  cleanCustomer: cleanCustomer
 }
