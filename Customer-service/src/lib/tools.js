@@ -18,10 +18,8 @@ async function hashPassword(password) {
 async function retrieveReservations(userID) {
 
   try {
-    console.log(userID);
     let reservations  = await Reservation.find({userID: userID});
     // If no reservation found
-    console.log(reservations);
     if (reservations.length === 0) {
       return false;
     } else {
