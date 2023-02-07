@@ -35,6 +35,19 @@ async function isCustomerExist(customerID) {
   }
 };
 
+async function isCustomerExistByEmail(customerEmail) {
+try {
+    let customer = await Customer.find({email: customerEmail});
+    if (typeof customer === "object") {
+        return customer;
+    } else {
+        return false
+    }
+    } catch (err) {
+    return false
+    }
+}
+
 async function hashPassword(password) {
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password, salt);
@@ -286,6 +299,7 @@ module.exports = {
     deleteAllCars: deleteAllCars,
     deleteAllAgents: deleteAllAgents,
     deleteAllReservation: deleteAllReservation,
-    saveReservations: saveReservations
+    saveReservations: saveReservations,
+    isCustomerExistByEmail: isCustomerExistByEmail,
     
 }

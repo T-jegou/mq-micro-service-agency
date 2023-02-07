@@ -1,6 +1,6 @@
 const { logger } = require('../services/loggerService');
 const { validationResult } = require('express-validator');
-const { isAgentExistAndPasswordCorrect, isCarIdValid, daysBetween, isCarAvailable, isCustomerExist, saveReservations} = require('../lib/tools');
+const { isAgentExistAndPasswordCorrect, isCarIdValid, daysBetween, isCarAvailable, isCustomerExist, saveReservations, isCustomerExistByEmail} = require('../lib/tools');
 const mongoose = require('mongoose');
 const {carSchema} = require('../models/Car');
 const {userSchema} = require('../models/User');
@@ -24,6 +24,53 @@ const listCars = async (req, res) => {
     } catch (err) {
         logger.info("Cannot find any car in the database");
         return res.status(404).json({ errors: [{ msg: 'Cannot find any car in the database' }] });
+    }
+}
+
+const retrieveReservationsOfACustomer = async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    const agentEmail = req.body.email;
+    const password = req.body.password;
+    const customerEmail = req.body.customerEmail;
+
+    // Check if the agent is registred
+    let agent = await isAgentExistAndPasswordCorrect(agentEmail, password);
+
+    if (typeof agent !== "object") {
+        logger.info("Cannot find this agent in the database");
+        return res.status(401).json({ errors: [{ msg: 'Cannot find this agent in the database' }] });
+    }
+
+    // Check if the customer is registred
+    let customer = await isCustomerExistByEmail(customerEmail);
+
+
+    if (typeof customer !== "object") {
+        logger.info("Cannot find this customer in the database");
+        return res.status(401).json({ errors: [{ msg: 'Cannot find this customer in the database' }] });
+    }
+
+    // Get all the reservation of the customer
+    try {
+        let reservations = await Reservation.find({customerID: customer._id});
+        if (typeof reservations === "object") {
+            if (reservations.length === 0) {
+                logger.info("This customer has no reservation in the database");
+                return res.status(404).json({ errors: [{ msg: 'This customer has no reservation in the database' }] });
+            } else {
+                return res.status(200).json(reservations);
+            }
+        } else {
+            logger.info("Cannot find any reservation for this customer in the database");
+            return res.status(404).json({ errors: [{ msg: 'Cannot find any reservation for this customer in the database' }] });
+        }
+    } catch (err) {
+        logger.info("Cannot find any reservation for this customer in the database");
+        return res.status(404).json({ errors: [{ msg: 'Cannot find any reservation for this customer in the database' }] });
     }
 }
 
@@ -351,4 +398,5 @@ module.exports = {
     isThisCarAvaible: isThisCarAvaible, 
     listReservation: listReservation,
     listCars: listCars,
+    retrieveReservationsOfACustomer: retrieveReservationsOfACustomer,
 };
