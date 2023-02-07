@@ -1,37 +1,74 @@
-# Car Rental Agency 
+# Car Rental Agency
 
 Final project of software architecture course.
+
+Our project consist of 2 microservices, one document DB (mongoDB) and also one MQ (RabbitMQ).
+
+## Customer-service
+
+### The role of customer-service is to provide users with the possibility of :
+
+- Customer registers for a new account
+- Customer retrieves account information
+- Customer can update his informations
+- Customer can retrieve the detials about his reservations
+- Customer can delete his account
+
+- Customer lists cars from the catalog  
+- Customer searches by criteria from the database
+- Customer can retrieve info about specific car  
+
+- Customer adds car rentals to the cart
+- Get his cart content
+- Clear his cart
+- Submit his cart content
+
+### The role of Agent-service is to provide users with the possibility of :
+
+- Agent checks whether a customer (identified by his email) is registered
+- Agent can retrieve reservation of a customer (identified by his email)
+  
+- Agent adds new cars to the catalog
+- Agent can create a reservation for a customer (identified by his email) from agency
+- Agent can lists cars from the catalog
+- Agent checks availability for a specific car
+- Agent can check all exisiting reservations
+
+
+See below the description of the applications.
 
 Architecture Diagram :
 ![plot](./docs/Car%20Rental%20Agency(2).png)
 
 ## Project setup
+
 ```
 docker-compose up -d
 ```
 
+## (Optionnal) Scale the agent service (up to 50)
 
-## Scale the agent service (up to 50)
 ```
 docker-compose up --scale agent-service=<1-50>
 ```
 
+## Api Specification
 
-## Api Specification 
-
-## 📁 Customer-service end-points 
+## 📁 Customer-service end-points
 
 ## End-point: Create an account
+
 ### Method: POST
+>
 >```
 >localhost:3000/api/account/create
 >```
+>
 ### Headers
 
 |Content-Type|Value|
 |---|---|
 |Content-Type|application/json|
-
 
 ### Body (**raw**)
 
@@ -50,14 +87,16 @@ docker-compose up --scale agent-service=<1-50>
 
 ```
 
-
 ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃
 
 ## End-point: Update account info
+
 ### Method: PUT
+>
 >```
 >localhost:3000/api/account/update
 >```
+>
 ### Body (**raw**)
 
 ```json
@@ -70,14 +109,16 @@ docker-compose up --scale agent-service=<1-50>
 
 ```
 
-
 ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃
 
 ## End-point: Get account information
+
 ### Method: GET
+>
 >```
 >localhost:3000/api/account/infos
 >```
+>
 ### Body (**raw**)
 
 ```json
@@ -86,15 +127,17 @@ docker-compose up --scale agent-service=<1-50>
     "password": "azerty123"
 }
 ```
-
 
 ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃
 
 ## End-point: Delete account
+
 ### Method: DELETE
+>
 >```
 >localhost:3000/api/account/delete
 >```
+>
 ### Body (**raw**)
 
 ```json
@@ -103,15 +146,17 @@ docker-compose up --scale agent-service=<1-50>
     "password": "azerty123"
 }
 ```
-
 
 ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃
 
 ## End-point: Get reservations account
+
 ### Method: GET
+>
 >```
 >localhost:3000/api/account/reservations
 >```
+>
 ### Body (**raw**)
 
 ```json
@@ -121,12 +166,14 @@ docker-compose up --scale agent-service=<1-50>
 }
 ```
 
-
 ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃
-## 📁 Collection: Rental system 
+
+## 📁 Collection: Rental system
 
 ## End-point: Get available cars
+
 ### Method: GET
+>
 >```
 >localhost:3000/api/rentalSystem/catalog
 >```
@@ -134,10 +181,13 @@ docker-compose up --scale agent-service=<1-50>
 ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃
 
 ## End-point: Get a specific car (brand/model/numberOfSeat)
+
 ### Method: GET
+>
 >```
 >localhost:3000/api/rentalSystem/specificCars
 >```
+>
 ### Body (**raw**)
 
 ```json
@@ -146,23 +196,28 @@ docker-compose up --scale agent-service=<1-50>
 }
 ```
 
-
 ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃
 
 ## End-point: Get infos about a cars
+
 ### Method: GET
+>
 >```
 >localhost:3000/api/rentalSystem/63cfbb223e0257761df4a0d
 >```
 
 ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃
-## 📁 Collection: Cart management 
+
+## 📁 Collection: Cart management
 
 ## End-point: Submit a reservation item to the Cart
+
 ### Method: POST
+>
 >```
 >localhost:3000/api/cart/
 >```
+>
 ### Body (**raw**)
 
 ```json
@@ -175,14 +230,16 @@ docker-compose up --scale agent-service=<1-50>
 }
 ```
 
-
 ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃
 
 ## End-point: Delete an Item of your cart
+
 ### Method: DELETE
+>
 >```
 >localhost:3000/api/cart/
 >```
+>
 ### Body (**raw**)
 
 ```json
@@ -193,14 +250,16 @@ docker-compose up --scale agent-service=<1-50>
 }
 ```
 
-
 ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃
 
 ## End-point: Retrieve cart informations
+
 ### Method: GET
+>
 >```
 >localhost:3000/api/cart
 >```
+>
 ### Body (**raw**)
 
 ```json
@@ -210,14 +269,16 @@ docker-compose up --scale agent-service=<1-50>
 }
 ```
 
-
 ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃
 
 ## End-point: Submit cart
+
 ### Method: POST
+>
 >```
 >localhost:3000/api/cart/submit
 >```
+>
 ### Body (**raw**)
 
 ```json
@@ -229,16 +290,20 @@ docker-compose up --scale agent-service=<1-50>
 }
 ```
 
-
 ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃
-# 📁 Collection: agent-service 
-## 📁 Collection: RentalSystem 
+
+# 📁 Collection: agent-service
+
+## 📁 Collection: RentalSystem
 
 ## End-point: Add new car to catalog
+
 ### Method: POST
+>
 >```
 >localhost:4000/api/car/catalog
 >```
+>
 ### Body (**raw**)
 
 ```json
@@ -254,14 +319,16 @@ docker-compose up --scale agent-service=<1-50>
 }
 ```
 
-
 ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃
 
 ## End-point: Create a reservation from an agency
+
 ### Method: POST
+>
 >```
 >localhost:4000/api/car/reservation
 >```
+>
 ### Body (**raw**)
 
 ```json
@@ -279,14 +346,16 @@ docker-compose up --scale agent-service=<1-50>
 
 ```
 
-
 ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃
 
 ## End-point: Check availability of a car
+
 ### Method: GET
+>
 >```
 >localhost:4000/api/car/availability
 >```
+>
 ### Body (**raw**)
 
 ```json
@@ -299,14 +368,16 @@ docker-compose up --scale agent-service=<1-50>
 }
 ```
 
-
 ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃
 
 ## End-point: List all exisiting reservation
+
 ### Method: GET
+>
 >```
 >localhost:4000/api/car/listReservation
 >```
+>
 ### Body (**raw**)
 
 ```json
@@ -316,15 +387,17 @@ docker-compose up --scale agent-service=<1-50>
 }
 
 ```
-
 
 ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃
 
 ## End-point: List all existing cars
+
 ### Method: GET
+>
 >```
 >localhost:4000/api/car/catalog
 >```
+>
 ### Body (**raw**)
 
 ```json
@@ -335,15 +408,18 @@ docker-compose up --scale agent-service=<1-50>
 
 ```
 
-
 ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃
-## 📁 Collection: CustomerManagement 
+
+## 📁 Collection: CustomerManagement
 
 ## End-point: Check if client is registred
+
 ### Method: GET
+>
 >```
 >localhost:4000/api/customer/isClient
 >```
+>
 ### Body (**raw**)
 
 ```json
@@ -354,15 +430,17 @@ docker-compose up --scale agent-service=<1-50>
 
 }
 ```
-
 
 ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃
 
 ## End-point: Retrieve Client reservations
+
 ### Method: GET
+>
 >```
 >localhost:4000/api/customer/reservations
 >```
+>
 ### Body (**raw**)
 
 ```json
@@ -372,6 +450,5 @@ docker-compose up --scale agent-service=<1-50>
     "customerEmail": "JohnDoe@test.com"
 }
 ```
-
 
 ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃ ⁃
