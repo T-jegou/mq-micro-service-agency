@@ -1,0 +1,404 @@
+{
+	"info": {
+		"_postman_id": "41e59156-f3f4-4240-bb07-86008a1d57f6",
+		"name": "car rental service",
+		"description": "**\\* Car rental Agency specification API **\\*",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "17999808"
+	},
+	"item": [
+		{
+			"name": "customer-service",
+			"item": [
+				{
+					"name": "Customer process",
+					"item": [
+						{
+							"name": "Create an account",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\" : \"John\",\n    \"surname\": \"Doe\",\n     \"email\": \"JohnDoe@test.com\",\n    \"password\": \"azerty123\",\n    \"address\" : \"6 avenue de la République\",\n    \"city\" : \"Villejuif\",\n    \"zipCode\" : \"94200\",\n    \"country\" : \"France\"\n}\n\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "localhost:3000/api/account/create"
+							},
+							"response": []
+						},
+						{
+							"name": "Update account info",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"JohnDoe@test.com\",\n    \"password\": \"azerty123\",\n    \"city\" : \"Paris\",\n    \"zipCode\" : \"75012\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "localhost:3000/api/account/update"
+							},
+							"response": []
+						},
+						{
+							"name": "Get account information",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"JohnDoe@test.com\",\n    \"password\": \"azerty123\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "localhost:3000/api/account/infos"
+							},
+							"response": []
+						},
+						{
+							"name": "Delete account",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"JohnDoe@test.com\",\n    \"password\": \"azerty123\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "localhost:3000/api/account/delete"
+							},
+							"response": []
+						},
+						{
+							"name": "Get reservations account",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"JohnDoe@test.com\",\n    \"password\": \"azerty123\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "localhost:3000/api/account/reservations"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Rental system",
+					"item": [
+						{
+							"name": "Get available cars",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "localhost:3000/api/rentalSystem/catalog"
+							},
+							"response": []
+						},
+						{
+							"name": "Get a specific car (brand/model/numberOfSeat)",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"model\" : \"A3\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "localhost:3000/api/rentalSystem/specificCars"
+							},
+							"response": []
+						},
+						{
+							"name": "Get infos about a cars",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "localhost:3000/api/rentalSystem/63cfbb223e0257761df4a0d"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Cart management",
+					"item": [
+						{
+							"name": "Submit a reservation item to the Cart",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n     \"email\": \"JohnDoe@test.com\",\n    \"password\": \"azerty123\",\n    \"carID\" : \"63e22d423468f5ebc0e01e6c\",\n    \"startDate\" : \"2021-03-20\",\n    \"endDate\" : \"2021-03-27\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "localhost:3000/api/cart/"
+							},
+							"response": []
+						},
+						{
+							"name": "Delete an Item of your cart",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n     \"email\": \"JohnDoe@test.com\",\n    \"password\": \"azerty123\",\n    \"reservation_id\" : \"63e22a51a942795aac385702\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "localhost:3000/api/cart/"
+							},
+							"response": []
+						},
+						{
+							"name": "Retrieve cart informations",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n     \"email\": \"JohnDoe@test.com\",\n    \"password\": \"azerty123\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "localhost:3000/api/cart"
+							},
+							"response": []
+						},
+						{
+							"name": "Submit cart",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n     \"email\": \"JohnDoe@test.com\",\n    \"password\": \"azerty123\",\n    \"paymentMethod\": \"creditCard\",\n    \"creditCardNumber\": \"2345234523452345\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "localhost:3000/api/cart/submit"
+							},
+							"response": []
+						}
+					]
+				}
+			],
+			"description": "Customer actions"
+		},
+		{
+			"name": "agent-service",
+			"item": [
+				{
+					"name": "RentalSystem",
+					"item": [
+						{
+							"name": "Add new car to catalog",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"agent1@car.com\",\n    \"password\": \"123456\",\n    \"brand\": \"Citroen\",\n    \"model\": \"C4\",\n    \"numberOfSeat\": \"5\",\n    \"pricePerDay\": \"80\",\n    \"available\": true\n\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "localhost:4000/api/car/catalog"
+							},
+							"response": []
+						},
+						{
+							"name": "Create a reservation from an agency",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"agent1@car.com\",\n    \"password\": \"123456\",\n    \"carID\" : \"63da2f3e5683291f48a3be1b\",\n    \"customerEmail\": \"JohnDoe@test.com\",\n    \"startDate\" : \"2020-04-24\",\n    \"endDate\" : \"2020-05-4\",\n    \"paymentStatus\" : \"Paid\" ,\n    \"paymentMethod\" : \"creditCard\",\n    \"ReservationStatus\" : \"Pending\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "localhost:4000/api/car/reservation"
+							},
+							"response": []
+						},
+						{
+							"name": "Check availability of a car",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"agent1@car.com\",\n    \"password\": \"123456\",\n    \"carID\" : \"\",\n \"startDate\" : \"2022-04-24\",\n    \"endDate\" : \"2022-05-4\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "localhost:4000/api/car/availability"
+							},
+							"response": []
+						},
+						{
+							"name": "List all exisiting reservation",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"agent1@car.com\",\n    \"password\": \"123456\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "localhost:4000/api/car/listReservation"
+							},
+							"response": []
+						},
+						{
+							"name": "List all existing cars",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"agent1@car.com\",\n    \"password\": \"123456\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "localhost:4000/api/car/catalog"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "CustomerManagement",
+					"item": [
+						{
+							"name": "Check if client is registred",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"agent1@car.com\",\n    \"password\": \"123456\",\n    \"customerEmail\": \"JohnDoe@test.com\"\n\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "localhost:4000/api/customer/isClient"
+							},
+							"response": []
+						},
+						{
+							"name": "Retrieve Client reservations",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"agent1@car.com\",\n    \"password\": \"123456\",\n    \"customerEmail\": \"JohnDoe@test.com\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "localhost:4000/api/customer/reservations"
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	]
+}
