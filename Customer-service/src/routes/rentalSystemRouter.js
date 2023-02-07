@@ -4,7 +4,7 @@ const {validGetSpecificCar, validGetCarDescritpion} = require('../lib/validator'
 const router = express.Router();
 
 
-router.get('/', retrieveAllCars);
+router.get('/catalog', retrieveAllCars);
 router.get('/specificCars', validGetSpecificCar, retrieveSpecificCars);
 router.get('/:carID',validGetCarDescritpion , getCarDescritpion);
 
