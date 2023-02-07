@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const { validationResult } = require('express-validator');
-const { hashPassword, isUserExistAndPasswordCorrect } = require('../lib/tools');
+const { hashPassword, isUserExistAndPasswordCorrect, retrieveReservations } = require('../lib/tools');
 const {userSchema} = require('../models/User');
 
 const User = mongoose.model('User', userSchema);
@@ -32,6 +32,37 @@ const createAccount = async (req, res) => {
     }
   });
 }
+
+/**
+ * Get account Reservation.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
+const getAccountReservations = async (req, res) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(400).send({ errors: errors.array() });
+  }
+
+
+  const user = await isUserExistAndPasswordCorrect(req.body.email, req.body.password);
+
+  if (typeof user !== "object") {
+    res.status(401).json("Cannot find your account");
+  }
+
+  let userID = user._id;
+
+  let Reservation = await retrieveReservations(userID);
+
+  if (typeof Reservation === "object") {
+    res.status(200).json(Reservation);
+  } else {
+    res.status(401).json("There is no reservation for this account");
+  }
+}
+
 
 /**
  * Get account informations.
@@ -123,20 +154,11 @@ const deleteAccount = async (req, res) => {
 }
 
 
-const getReservation = (req, res) => {
-  res.send(200).json("Must be implemented")
-  return true;
-}
 
-const getReservations = (req, res) => {
-  res.send(200).json("Must be implemented");
-  return true;
-}
 
 
 module.exports = {
-    getReservations: getReservations,
-    getReservation: getReservation,
+    getAccountReservations: getAccountReservations,
     createAccount: createAccount,
     getAccount: getAccount,
     updateAccount: updateAccount,

@@ -15,6 +15,24 @@ async function hashPassword(password) {
     return hash;
 };
 
+async function retrieveReservations(userID) {
+
+  try {
+    console.log(userID);
+    let reservations  = await Reservation.find({userID: userID});
+    // If no reservation found
+    console.log(reservations);
+    if (reservations.length === 0) {
+      return false;
+    } else {
+      return reservations;
+    }  
+  } catch (err) {
+    res.status(500).json("An error occured while getting your reservations");
+  }
+  
+}
+
 
 async function validatePassword(password, hashedPassword) {
     const isValid = await bcrypt.compare(password, hashedPassword);
@@ -112,5 +130,6 @@ module.exports = {
   hashPassword: hashPassword,
   validatePassword: validatePassword,
   cleanCart: cleanCart,
-  isCarAvailable: isCarAvailable
+  isCarAvailable: isCarAvailable, 
+  retrieveReservations: retrieveReservations
 }
