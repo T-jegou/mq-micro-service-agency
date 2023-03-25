@@ -2,31 +2,31 @@ version: '3.3'
 services:
     agent-service:
         restart: always 
-        build: ./Agent-service # build the image from the dockerfile present in the order-service directory
+        build: ./Agent-service 
         image: tjegou/agencycar-agent-service:1.0.0
         depends_on:
             - mongo
             - rabbitmq
-        environment: # environment variables
+        environment:
             - PORT=4000
             - MQ_HOST=rabbitmq
-            - MONGO_HOST=mongo # this should be the same as the name of the DB service below
-            - SLEEP_TIME=10000 # time to wait before retrying to connect to the DB AND the MQ
+            - MONGO_HOST=mongo 
+            - SLEEP_TIME=10000 
         ports: 
             - '4000-4050:4000' 
 
     customer-service:
         restart: always 
-        build: ./Customer-service # build the image from the dockerfile present in the order-service directory
+        build: ./Customer-service 
         image: tjegou/agencycar-customer-service:1.0.0
         depends_on:
             - mongo
             - rabbitmq
-        environment: # environment variables
+        environment:
             - MQ_HOST=rabbitmq
-            - MONGO_HOST=mongo # this should be the same as the name of the DB service below
-            - PREFETCH_COUNT=3 # Max reservations that can be processed simultaneously
-            - SLEEP_TIME=10000 # time to wait before retrying to connect to the DB AND the MQ
+            - MONGO_HOST=mongo 
+            - PREFETCH_COUNT=3 
+            - SLEEP_TIME=10000 
         ports: 
             - '3000:3000'
             
@@ -36,9 +36,9 @@ services:
             - '15672:15672'
         image: 'rabbitmq:3.11-management'
     
-    mongo: # database
-        image: mongo:latest # pull the mongo image from docker hub
+    mongo: 
+        image: mongo:latest
         logging: 
-            driver: none # disable logging
+            driver: none 
         ports:
             - '27017:27017'

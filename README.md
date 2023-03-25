@@ -37,6 +37,11 @@ Our project consist of 2 microservices, one document DB (mongoDB) and also one M
 Architecture Diagram :
 ![plot](./docs/Car%20Rental%20Agency(2).png)
 
+## Requirements
+
+- Docker
+- Docker-Compose
+
 ## Project setup
 
 ```bash
