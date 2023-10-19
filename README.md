@@ -1,6 +1,6 @@
 # Car Rental Agency
 
-Our project consist of 2 microservices, one document DB (mongoDB) and also one MQ (RabbitMQ).
+Project consist of 2 microservices, one document DB (mongoDB) and also one MQ (RabbitMQ).
 
 ## Customer-service
 
